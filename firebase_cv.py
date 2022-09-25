@@ -1,6 +1,6 @@
 from firebase import firebase
 
-firebase = firebase.FirebaseApplication('https://enet5-7f9f6.firebaseio.com/', None)
+firebase = firebase.FirebaseApplication('https://<<ID>>.firebaseio.com/', None)
 data =  { 'Name': 'BANYAPON',
           'Surname': 'POOLSAWAS',
           'Gender': 'M'

@@ -2,18 +2,21 @@ import face_recognition
 import cv2
 import json
 import requests
+import datetime
 
 from firebase import firebase
+
+isCheck = False
 
 videoCapture = cv2.VideoCapture(0)
 
 person_face_encodings = []
 person_face_names = []
 
-firebase = firebase.FirebaseApplication('https://enet5-7f9f6.firebaseio.com/', None)
+firebase = firebase.FirebaseApplication('https://<<ID>>.firebaseio.com/', None)
 result = firebase.get('/person/', '')
 for person in result:
-    jsn = requests.get('https://enet5-7f9f6.firebaseio.com/person.json')
+    jsn = requests.get('https://<<ID>>.firebaseio.com/person.json')
     data = jsn.json()
 
     database_image = face_recognition.load_image_file('images/'+ data[person]['Image'])
@@ -41,6 +44,15 @@ while True:
                 first_match_index = matches.index(True)
                 name = person_face_names[first_match_index]
 
+                #check name
+                if(isCheck == False):
+                    data_check =  { 
+                        'Name': name,
+                        'TIME': datetime.datetime.now()
+                        }
+                    result = firebase.post('/person_checkin',data_check)
+                    isCheck = True
+
             data_names.append(name)
     frameProcess = not frameProcess
     for (top, right, bottom, left), name in zip(data_locations, data_names):
@@ -54,6 +66,11 @@ while True:
         cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
     cv2.imshow('Video', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        data_check =  { 
+            'Name': name,
+            'TIME': datetime.datetime.now()
+            }
+        result = firebase.post('/person_checkout',data_check)
         break
 videoCapture.release()
 cv2.destroyAllWindows()
