@@ -1,7 +1,9 @@
 import cv2
 import face_recognition
+import numpy as np
 
 cap = cv2.VideoCapture(r'videos/WIN_20220925_13_54_04_Pro.mp4',0)
+#cap = cv2.VideoCapture(0)
 database_image = face_recognition.load_image_file("images/banyapon.jpg")
 data_base_encoding = face_recognition.face_encodings(database_image)[0]
 face_locations = []
@@ -15,7 +17,8 @@ frameProcess = True
 
 while True:
     ret, frame = cap.read()
-    rgb_frame = frame[:, :, ::-1]
+    rgb_frame = np.ascontiguousarray(frame[:, :, ::-1])
+    #rgb_frame = frame[:, :, ::-1]
     data_locations = face_recognition.face_locations(rgb_frame)
     for top, right, bottom, left in data_locations:
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 4)
@@ -32,7 +35,7 @@ while True:
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
-    frame = cv2.resize(frame, (320, 180))
+    frame = cv2.resize(frame, (240, 90))
     cv2.imshow('Video', frame)
     if cv2.waitKey(25) == 13:
         break
