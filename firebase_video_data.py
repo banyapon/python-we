@@ -3,6 +3,7 @@ import face_recognition
 from firebase import firebase
 import json
 import requests
+import numpy as np
 
 person_face_encodings = []
 person_face_names = []
@@ -27,7 +28,7 @@ frameProcess = True
 while True:
     ret, frame = videoCapture.read()
     resizing = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-    rgb_resizing = resizing[:, :, ::-1]
+    rgb_resizing = np.ascontiguousarray(resizing[:, :, ::-1])
     if frameProcess:
         data_locations = face_recognition.face_locations(rgb_resizing)
         data_encodings = face_recognition.face_encodings(rgb_resizing, data_locations)
