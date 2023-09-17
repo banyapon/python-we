@@ -3,6 +3,7 @@ import cv2
 import json
 import requests
 import datetime
+import numpy as np
 
 from firebase import firebase
 
@@ -32,7 +33,8 @@ frameProcess = True
 while True:
     ret, frame = videoCapture.read()
     resizing = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-    rgb_resizing = resizing[:, :, ::-1]
+    #rgb_resizing = resizing[:, :, ::-1]
+    rgb_resizing = np.ascontiguousarray(resizing[:, :, ::-1])
     if frameProcess:
         data_locations = face_recognition.face_locations(rgb_resizing)
         data_encodings = face_recognition.face_encodings(rgb_resizing, data_locations)
